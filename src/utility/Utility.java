@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -102,5 +103,13 @@ public class Utility {
                 
                 throw new UrlNotSupportedException();
             }
+        }
+        
+        public void sendData(HttpServletRequest request,ModelView modelview){
+            
+            HashMap map = modelview.getMap();
+            map.forEach(
+            (key, value)
+                -> request.setAttribute((String)key,value));
         }
 }

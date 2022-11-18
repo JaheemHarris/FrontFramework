@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import utility.ClassMethod;
+import utility.ModelView;
 import utility.Utility;
 
 /**
@@ -67,7 +68,11 @@ public class FrontServlet extends HttpServlet {
                 ClassMethod classMethod = utility.getClassMethod(context, servletPath);
                 Method methode = classMethod.getMethode();
                 Class classe = classMethod.getClasse();
-                methode.invoke(classe.newInstance());
+                Object obtInstance = classe.newInstance();
+                ModelView modelview = (ModelView)methode.invoke(obtInstance);
+                utility.sendData(request,modelview);
+                RequestDispatcher goTo = request.getRequestDispatcher(modelview.getPage());
+                goTo.forward(request, response);
             }catch(Exception e){
                 try {
                     throw e;
