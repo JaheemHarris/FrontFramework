@@ -7,11 +7,15 @@ package front;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import utility.ClassMethod;
+import utility.Utility;
 
 /**
  *
@@ -19,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "FrontServlet", urlPatterns = "*.do")
 public class FrontServlet extends HttpServlet {
+    
+    private Utility utility;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,6 +35,16 @@ public class FrontServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
+    @Override
+    public void init() throws ServletException{
+        ServletContext context = getServletContext();
+        if(context.getAttribute("map") == null){
+            context.setAttribute("map", new HashMap<String, ClassMethod>());
+        }
+       
+    }
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
