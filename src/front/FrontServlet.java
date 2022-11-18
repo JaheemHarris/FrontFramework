@@ -70,6 +70,7 @@ public class FrontServlet extends HttpServlet {
                 Class classe = classMethod.getClasse();
                 Object obtInstance = classe.newInstance();
                 ModelView modelview = (ModelView)methode.invoke(obtInstance);
+                //send donnees any amn page
                 utility.sendData(request,modelview);
                 RequestDispatcher goTo = request.getRequestDispatcher(modelview.getPage());
                 goTo.forward(request, response);
