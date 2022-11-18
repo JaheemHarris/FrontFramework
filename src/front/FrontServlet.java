@@ -68,7 +68,7 @@ public class FrontServlet extends HttpServlet {
                 ClassMethod classMethod = utility.getClassMethod(context, servletPath);
                 Method methode = classMethod.getMethode();
                 Class classe = classMethod.getClasse();
-                Object obtInstance = classe.newInstance();
+                Object obtInstance = utility.saveData(request, classMethod);
                 ModelView modelview = (ModelView)methode.invoke(obtInstance);
                 utility.sendData(request,modelview);
                 RequestDispatcher goTo = request.getRequestDispatcher(modelview.getPage());

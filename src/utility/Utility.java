@@ -8,9 +8,15 @@ package utility;
 import annotation.UrlAnnotation;
 import exception.UrlNotSupportedException;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -111,5 +117,94 @@ public class Utility {
             map.forEach(
             (key, value)
                 -> request.setAttribute((String)key,value));
+        }
+        
+        public Object saveData(HttpServletRequest request, ClassMethod classMethod) throws Exception{
+            Object controllerObject = classMethod.getClasse().newInstance();
+            HashMap<String, List> classParams = this.getInsertParameters(request, classMethod);
+            classParams.forEach(
+                    (className, names)
+                            -> {
+                        Object classInstance = null;
+                        List<String> paramNames = names;
+                        Field[] fields = classMethod.getClasse().getDeclaredFields();
+                        for(Field field : fields){
+                            try{
+                                Method[] listMethods = classMethod.getClasse().getDeclaredMethods();
+                                Method controlMethod = null;
+                                for(Method method : listMethods){;
+                                    if(method.getName().compareToIgnoreCase(toSetterName(className)) == 0){
+                                        controlMethod = method;
+                                        break;
+                                    }
+                                }
+                                String simpleClassName = field.getType().getSimpleName();
+                                if(simpleClassName.compareToIgnoreCase(className) == 0 && controlMethod != null){
+                                    classInstance = field.getType().newInstance();
+                                    for(String name : paramNames){
+                                        Method[] fieldMethods = classInstance.getClass().getDeclaredMethods();
+                                        Method fieldMethod = null;
+                                        for(Method method : fieldMethods){;
+                                            if(method.getName().compareToIgnoreCase(toSetterName(name)) == 0){
+                                                fieldMethod = method;
+                                                break;
+                                            }
+                                        }
+                                        if(fieldMethod != null){
+                                            String requestParamName = className+"."+name;
+                                            fieldMethod.invoke(classInstance, request.getParameter(requestParamName));
+                                        }
+                                    }
+                                    controlMethod.invoke(controllerObject, classInstance);
+                                    break;
+                                }
+                            }catch (InstantiationException ex) {
+                                Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IllegalAccessException ex) {
+                                Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IllegalArgumentException ex) {
+                                Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (InvocationTargetException ex) {
+                                Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    } 
+            );
+            return controllerObject;
+        }
+        
+        public HashMap getInsertParameters(HttpServletRequest request, ClassMethod classMethod){
+            HashMap<String, List<String>> classParams = new HashMap<String, List<String>>();
+            Enumeration<String> paramNames = request.getParameterNames();
+            while(paramNames.hasMoreElements()){
+                String paramName = paramNames.nextElement();
+                String[] paramSplit = paramName.split("\\.");
+                if(paramSplit.length == 2){
+                    String classParam = paramSplit[0];
+                    String param = paramSplit[1];
+                    List<String> paramsList = new ArrayList();
+                    if(classParams.containsKey(classParam)){
+                        paramsList = (List<String>)classParams.get(classParam);
+                    }
+                    paramsList.add(param);
+                    classParams.put(classParam, paramsList);
+                }
+            }
+            return classParams;
+        }
+        
+        public String firstLetterUpperCase(String toChange){
+            char[] toChangeChar = toChange.toCharArray();
+            String firstLetter = String.valueOf(toChangeChar[0]);
+            String returnValue = firstLetter.toUpperCase();
+            for(int i=1;i<toChangeChar.length;i++){
+                returnValue = returnValue + String.valueOf(toChangeChar[i]);
+            }
+            return returnValue;
+        }
+        
+        public String toSetterName(String name){
+            String setterName = "set"+firstLetterUpperCase(name);
+            return setterName;
         }
 }
