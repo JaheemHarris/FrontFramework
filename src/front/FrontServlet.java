@@ -5,9 +5,14 @@
  */
 package front;
 
+import exception.UrlNotSupportedException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -47,6 +52,29 @@ public class FrontServlet extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try{
+                
+                //path aty arina
+                String servletPath = request.getServletPath();
+                ServletContext context = this.getServletContext();
+                utility = new Utility();
+                utility.fillHashMap(context);
+                try{
+                    utility.checkUrl(context, servletPath);
+                }catch (UrlNotSupportedException ex) {
+                    throw ex;
+                }
+                ClassMethod classMethod = utility.getClassMethod(context, servletPath);
+                Method methode = classMethod.getMethode();
+                Class classe = classMethod.getClasse();
+                methode.invoke(classe.newInstance());
+            }catch(Exception e){
+                try {
+                    throw e;
+                } catch (Exception ex) {
+                    Logger.getLogger(FrontServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
