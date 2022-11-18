@@ -6,6 +6,7 @@
 package utility;
 
 import annotation.UrlAnnotation;
+import exception.UrlNotSupportedException;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -79,5 +80,27 @@ public class Utility {
                    }
             }
             context.setAttribute("map",map);
+        }
+        
+        public ClassMethod getClassMethod(ServletContext context,String url){
+            
+            ClassMethod classMethod = null;
+            HashMap<String , ClassMethod > map = (HashMap<String , ClassMethod>)context.getAttribute("map");
+            String rightUrlMethod = retrieveUrl(url);
+            if(map.containsKey(rightUrlMethod)){
+                
+                classMethod = (ClassMethod)map.get(rightUrlMethod);
+            }
+            return classMethod;
+        }
+        
+        public void  checkUrl(ServletContext context,String url) throws UrlNotSupportedException{
+            
+            HashMap<String , ClassMethod > map = (HashMap<String , ClassMethod>)context.getAttribute("map");
+            String rightUrlMethod = retrieveUrl(url);
+            if(!map.containsKey(rightUrlMethod)){
+                
+                throw new UrlNotSupportedException();
+            }
         }
 }
