@@ -27,8 +27,13 @@ This is how you should design your controller functions
 ```java
 
 // Use @UrlAnnotation to execute this function if the endpoint matches the value of "lien"
-// The function should return ModelView Object
 // ex: http://localhost/my-app/heroes
+
+
+// But you can also access this function if the function name matches the endpoint
+// ex : http://localhost/my-app/heroes-getHeroes
+// The function should return ModelView Object
+
 @UrlAnnotation(lien = "heroes")
 public ModelView getHeroes() throws Exception{
 
