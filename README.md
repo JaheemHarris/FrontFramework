@@ -24,14 +24,23 @@ import utility.ModelView;
 
 
 This is how you should design your controller functions
+URLs must end with ".do"
+
+
+
+
+This function send data to page
+GET method then
 ```java
 
-// Use @UrlAnnotation to execute this function if the endpoint matches the value of "lien"
-// ex: http://localhost/my-app/heroes
+// Use @UrlAnnotation to execute this function if the endpoint without .do at the end matches the value of "lien"
+// ex: http://localhost/my-app/heroes.do
 
 
-// But you can also access this function if the function name matches the endpoint
-// ex : http://localhost/my-app/heroes-getHeroes
+// But you can also access this function if the function name matches the endpoint without the .do at the end
+// ex : http://localhost/my-app/getHeroes.do
+
+
 // The function should return ModelView Object
 
 @UrlAnnotation(lien = "heroes")
@@ -54,6 +63,55 @@ public ModelView getHeroes() throws Exception{
   
   return modelView;
 }
+```
+
+
+This one when data is sent in the request
+Through POST or GET method
+
+```java
+// ex: POST http://localhost/my-app/hero.do with parametes name, level
+// or ex: GET http://localhost/my-app/hero.do?name=SonGoku&level=15
+// Parameters must match Hero Class Model attribure
+// These parameters are automatically binded on the model class matches attributes
+
+//Hero Class
+// Model class must contain default constructor without parameters
+// with get,set functions for each attributes
+public class Hero{
+    private String name;
+    private int level;
+
+    public Hero(){
+    }
+    
+    /* Impletementation of getters and setters methods here (getName, setName, getLevel, setLevel)
+       ...
+    */
+}
+
+//The controller must have the model as an attribute
+private Hero hero;
+
+
+// POST, GET parameters sended : name=SonGoku , level=1
+@UrlAnnotation(lien = "hero")
+    public ModelView addEmp() throws Exception{
+        ModelView modelView = new ModelView();
+        try{
+            /* Implement code to store the attribute here
+               ...
+               ex: heroService.add(hero);
+            */
+            
+            // if it is successfully done
+            modelView.setPage("hero.do?success");
+        }catch(Exception e){
+            // it error occurs
+            modelView.setPage("hero.do?fail");
+        }
+        return modelView;
+    }
 ```
 
 
