@@ -112,13 +112,15 @@ public class HeroController{
 
 
 ```java
-// POST, GET parameters sended : name=SonGoku , level=1
+// POST, GET parameters sended : name=SonGoku , level=15
 @UrlAnnotation(lien = "hero")
     public ModelView addEmp() throws Exception{
         ModelView modelView = new ModelView();
         try{
             /* Implement code to store the attribute here
                ...
+               hero.getName() here is SonGoku
+               hero.getLevel() here is 15
                ex: heroService.add(hero);
             */
             
