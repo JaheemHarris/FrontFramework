@@ -9,10 +9,15 @@ It explains how Spring Controllers and Spring Controller annotations works.
 
 ## How to use it
 
-Put your controllers classes in a package named controllers so they could be identified by the framework
+Put your controller classes in a package named controllers so they could be identified by the framework
 
 ```java
 package controllers;
+```
+
+Put your model classes in a package named models so they could be identified by the framework
+```java
+package models;
 ```
 
  Import these classes
@@ -89,6 +94,9 @@ public class Hero{
        ...
     */
 }
+
+//import your model class to the controller
+import models.Hero;
 
 //The controller must have the model as an attribute
 private Hero hero;
