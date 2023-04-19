@@ -80,6 +80,10 @@ Through POST or GET method
 // Parameters must match Hero Class Model attribure
 // These parameters are automatically binded on the model class matches attributes
 
+```
+Define your model class
+
+```java
 //Hero Class
 // Model class must contain default constructor without parameters
 // with get,set functions for each attributes
@@ -94,14 +98,20 @@ public class Hero{
        ...
     */
 }
+```
 
-//import your model class to the controller
+Import your model class to the controller and add it as an attribute to the controller
+```java
 import models.Hero;
 
 //The controller must have the model as an attribute
-private Hero hero;
+public class HeroController{
+    private Hero hero;
+}
+```
 
 
+```java
 // POST, GET parameters sended : name=SonGoku , level=1
 @UrlAnnotation(lien = "hero")
     public ModelView addEmp() throws Exception{
